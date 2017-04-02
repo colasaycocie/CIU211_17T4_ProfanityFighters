@@ -7,7 +7,6 @@ public class playerAttack : MonoBehaviour {
     public int attackDamage = 15;               // The amount of health taken away per attack.
 
     Animator anim;                              // Reference to the animator component.
-    GameObject Bullet;                          // Reference to the player GameObject.
     GameObject enemy;
     //PlayerHealth playerHealth;                  // Reference to the player's health.
     EnemyHealth enemyHealth;                    // Reference to this enemy's health.
@@ -17,7 +16,6 @@ public class playerAttack : MonoBehaviour {
     void Awake()
     {
         // Setting up the references.
-        Bullet = GameObject.FindGameObjectWithTag("Bullet");
         enemy = GameObject.FindGameObjectWithTag("Enemy");
         enemyHealth = enemy.GetComponent<EnemyHealth>();
         anim = enemy.GetComponent<Animator>();
@@ -28,10 +26,8 @@ public class playerAttack : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-
         // ... the player is in range.
         Attack();
-
     }
 
 
@@ -55,6 +51,7 @@ public class playerAttack : MonoBehaviour {
         {
             // ... damage the player.
             enemyHealth.TakeDamage(attackDamage);
+
         }
     }
 }

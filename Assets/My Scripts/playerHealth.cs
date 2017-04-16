@@ -4,11 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class EnemyHealth : MonoBehaviour
-{
+public class playerHealth : MonoBehaviour {
 
     public int startingHealth = 100;            // The amount of health the enemy starts the game with.
-    public int enemyCurrentHealth;                   // The current health the enemy has.
+    public int playerCurrentHealth;                   // The current health the enemy has.
 
     public Slider healthSlider;                                 // Reference to the UI's health bar.
 
@@ -25,7 +24,7 @@ public class EnemyHealth : MonoBehaviour
         GameObject.Find("BloodParticle");
 
         // Setting the current health when the enemy first spawns.
-        enemyCurrentHealth = startingHealth;
+        playerCurrentHealth = startingHealth;
     }
 
     void Update()
@@ -44,14 +43,12 @@ public class EnemyHealth : MonoBehaviour
         //enemyAudio.Play();
 
         // Reduce the current health by the amount of damage sustained.
-        enemyCurrentHealth -= amount;
+        playerCurrentHealth -= amount;
 
-
-        healthSlider.value = enemyCurrentHealth;
-
+        healthSlider.value = playerCurrentHealth;
 
         // If the current health is less than or equal to zero...
-        if (enemyCurrentHealth <= 0)
+        if (playerCurrentHealth <= 0)
         {
             // ... the enemy is dead.
             Death();

@@ -35,7 +35,7 @@ public class playerAttack : MonoBehaviour {
     {
 
         // If the player has zero or less health...
-        if (enemyHealth.currentHealth <= 0)
+        if (enemyHealth.enemyCurrentHealth <= 0)
         {
             // ... tell the animator the player is dead.
             anim.SetTrigger("Dead");
@@ -47,7 +47,7 @@ public class playerAttack : MonoBehaviour {
     void Attack()
     {
         // If the player has health to lose...
-        if (enemyHealth.currentHealth > 0)
+        if (enemyHealth.enemyCurrentHealth > 0)
         {
             // ... damage the player.
             enemyHealth.TakeDamage(attackDamage);

@@ -8,7 +8,7 @@ public class AttackManager : MonoBehaviour {
     private int attackDamage;               // The amount of health taken away per attack.
 
     [Header("Cooldowns")]
-    public float mediumAttack1Cooldown = Mathf.Clamp (3f,0f,3f);
+    public static float mediumAttack1Cooldown = 10f;
     public float mediumAttack2Cooldown = 4f;
     public float mediumAttack3Cooldown = 5f;
     private bool MA1Cooldown;
@@ -102,7 +102,7 @@ public class AttackManager : MonoBehaviour {
 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton1")
+            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton1" && MA1Cooldown == false)
             {
 
                StartCoroutine("Attack");
@@ -172,15 +172,16 @@ public class AttackManager : MonoBehaviour {
 
     void Update()
     {
-        //Debug.Log(mediumAttack1Cooldown);
+        Debug.Log(mediumAttack1Cooldown);
 
         if(MA1Cooldown == true)
         {
             mediumAttack1Cooldown -= Time.deltaTime;
 
-            if(mediumAttack1Cooldown == 0)
+            if(mediumAttack1Cooldown <= 0)
             {
                 MA1Cooldown = false;
+                mediumAttack1Cooldown = 10f;
             }
 
             //if()

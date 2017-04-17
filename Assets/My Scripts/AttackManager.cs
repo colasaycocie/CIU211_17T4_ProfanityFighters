@@ -2,24 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class AttackManager : MonoBehaviour {
 
     private int attackDamage;               // The amount of health taken away per attack.
 
     [Header("Cooldowns")]
-    public static int mediumAttack1Cooldown = 2;
-    public static int mediumAttack2Cooldown = 2;
-    public static int mediumAttack3Cooldown = 2;
+    public static int mediumAttack1Cooldown = 3;
+    public static int mediumAttack2Cooldown = 3;
+    public static int mediumAttack3Cooldown = 3;
     public static int heavyAttackCooldown = 5;
     private static bool MA1Cooldown;
     private static bool MA2Cooldown;
     private static bool MA3Cooldown;
     private static bool HACooldown;
+    public Text MA1CooldownText;
+    public GameObject MA1CooldownButton;
+    public Text MA2CooldownText;
+    public GameObject MA2CooldownButton;
+    public Text MA3CooldownText;
+    public GameObject MA3CooldownButton;
+    public Text HACooldownText;
+    public GameObject HACooldownButton;
 
     Animator anim;                              // Reference to the animator component.
     GameObject enemy;
     EnemyHealth enemyHealth;                    // Reference to this enemy's health.
+
     public enemyAttackManager enemyAttackManager;
 
     [Header("Attack Prefabs")]
@@ -189,49 +199,70 @@ public class AttackManager : MonoBehaviour {
     {
         if (MA1Cooldown == true)
         {
+            MA1CooldownButton.SetActive(true);
             mediumAttack1Cooldown -= 1;
+
+            MA1CooldownText.text = "" + mediumAttack1Cooldown;
 
             if (mediumAttack1Cooldown <= 0)
             {
 
                 MA1Cooldown = false;
-                mediumAttack1Cooldown = 2;
+                mediumAttack1Cooldown = 3;
+                MA1CooldownText.text = "" + mediumAttack1Cooldown;
+                MA1CooldownButton.SetActive(false);
             }
         }
 
         if (MA2Cooldown == true)
         {
+            MA2CooldownButton.SetActive(true);
             mediumAttack2Cooldown -= 1;
+
+            MA2CooldownText.text = "" + mediumAttack2Cooldown;
 
             if (mediumAttack2Cooldown <= 0)
             {
 
                 MA2Cooldown = false;
                 mediumAttack2Cooldown = 2;
+                MA2CooldownText.text = "" + mediumAttack2Cooldown;
+                MA2CooldownButton.SetActive(false);
             }
         }
 
         if (MA3Cooldown == true)
         {
+            MA3CooldownButton.SetActive(true);
             mediumAttack3Cooldown -= 1;
+
+            MA3CooldownText.text = "" + mediumAttack3Cooldown;
 
             if (mediumAttack3Cooldown <= 0)
             {
 
                 MA3Cooldown = false;
                 mediumAttack3Cooldown = 2;
+                MA3CooldownText.text = "" + mediumAttack3Cooldown;
+                MA3CooldownButton.SetActive(false);
             }
         }
 
         if (HACooldown == true)
         {
+
+            HACooldownButton.SetActive(true);
             heavyAttackCooldown -= 1;
+
+            HACooldownText.text = "" + heavyAttackCooldown;
 
             if (heavyAttackCooldown <= 0)
             {
 
                 HACooldown = false;
                 heavyAttackCooldown = 5;
+                HACooldownText.text = "" + heavyAttackCooldown;
+                HACooldownButton.SetActive(true);
             }
         }
     }

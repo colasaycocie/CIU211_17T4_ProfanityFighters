@@ -8,11 +8,13 @@ public class LevelLoader : MonoBehaviour
     public GameObject Controls;
     public GameObject mainButtons;
 
-    void OnMouseDown()
+    public string selectedLevel;
+
+    public void OnMouseDown()
     {
         if (gameObject.CompareTag("Play"))
             {
-            SceneManager.LoadScene("Level Select");
+            SceneManager.LoadScene(selectedLevel);
             }
 
         if (gameObject.CompareTag("Controls"))

@@ -1,11 +1,11 @@
 fileFormatVersion: 2
 guid: a20d7c914e036244e8a21a921f3a00cf
-timeCreated: 1492786026
+timeCreated: 1492950374
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: CarPack_0
-    21300002: CarPack_1
+    21300000: Car1
+    21300002: Car2
     21300004: CarPack_2
     21300006: CarPack_3
     21300008: CarPack_4
@@ -90,20 +90,20 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: CarPack_0
+      name: Car1
       rect:
         serializedVersion: 2
         x: 64
-        y: 1643
-        width: 906
-        height: 376
+        y: 1639
+        width: 910
+        height: 380
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: CarPack_1
+      name: Car2
       rect:
         serializedVersion: 2
         x: 1130

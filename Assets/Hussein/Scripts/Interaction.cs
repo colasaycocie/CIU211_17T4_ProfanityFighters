@@ -11,7 +11,7 @@ public class Interaction : MonoBehaviour
 
 	void OnTriggerStay ()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Interact"))
         { 
                 interactionText.SetActive(false);
                 SceneManager.LoadScene(sceneToLoad.name);

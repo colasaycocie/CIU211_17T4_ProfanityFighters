@@ -54,6 +54,7 @@ public class EnemyHealth : MonoBehaviour
         if (enemyCurrentHealth <= 0)
         {
             // ... the enemy is dead.
+            enemyCurrentHealth = 0;
             Death();
         }
     }

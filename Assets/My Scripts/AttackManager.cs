@@ -7,6 +7,15 @@ using UnityEngine.UI;
 public class AttackManager : MonoBehaviour {
 
     private int attackDamage;               // The amount of health taken away per attack.
+    private int manaAdditive;
+    private int manaCost;
+
+    public static int startingPlayerMana = 50;
+    public static int currentplayerMana;
+    public Slider manaSlider;
+    public Slider enemyManaSlider;
+    public Text playerHealthText;
+    public Text playerManaText;
 
     [Header("Cooldowns")]
     public static int mediumAttack1Cooldown = 3;
@@ -29,6 +38,7 @@ public class AttackManager : MonoBehaviour {
     Animator anim;                              // Reference to the animator component.
     GameObject enemy;
     EnemyHealth enemyHealth;                    // Reference to this enemy's health.
+    playerHealth playerHealth;
 
     public enemyAttackManager enemyAttackManager;
 
@@ -56,7 +66,9 @@ public class AttackManager : MonoBehaviour {
         // Setting up the references.
         enemyAttackManager = FindObjectOfType<enemyAttackManager>();
         enemy = GameObject.FindGameObjectWithTag("Enemy");
+        playerHealth = FindObjectOfType<playerHealth>();
         enemyHealth = enemy.GetComponent<EnemyHealth>();
+        currentplayerMana = startingPlayerMana;
     }
 
     public void OnClick()
@@ -70,33 +82,36 @@ public class AttackManager : MonoBehaviour {
             if (EventSystem.current.currentSelectedGameObject.name == "LightAttackButton1")
             {
 
-               StartCoroutine("Attack");
+                StartCoroutine("Attack");
 
-               attackDamage = 5;
+                attackDamage = 5;
 
-               //activateAttack = false;
+                manaAdditive = 10;
 
-               instantiatedlightAttack1 = (GameObject)Instantiate(lightAttack1, transform.position, transform.rotation);
+                //activateAttack = false;
 
-               // After 2 seconds the text is destroyed.
-               Destroy(instantiatedlightAttack1.gameObject, 2f);
+                instantiatedlightAttack1 = (GameObject)Instantiate(lightAttack1, transform.position, transform.rotation);
+
+                // After 2 seconds the text is destroyed.
+                Destroy(instantiatedlightAttack1.gameObject, 2f);
                 
-
             }
 
             if (EventSystem.current.currentSelectedGameObject.name == "LightAttackButton2")
             {
 
-               StartCoroutine("Attack");
+                StartCoroutine("Attack");
 
-               attackDamage = 10;
+                attackDamage = 7;
 
-               //activateAttack = false;
+                manaAdditive = 14;
 
-               instantiatedlightAttack2 = (GameObject)Instantiate(lightAttack2, transform.position, transform.rotation);
+                //activateAttack = false;
 
-               // After 2 seconds the text is destroyed.
-               Destroy(instantiatedlightAttack2.gameObject, 2f);
+                instantiatedlightAttack2 = (GameObject)Instantiate(lightAttack2, transform.position, transform.rotation);
+
+                // After 2 seconds the text is destroyed.
+                Destroy(instantiatedlightAttack2.gameObject, 2f);
 
             }
 
@@ -107,7 +122,9 @@ public class AttackManager : MonoBehaviour {
 
                 //activateAttack = false;
 
-                attackDamage = 15;
+                attackDamage = 10;
+
+                manaAdditive = 20;
 
                 instantiatedlightAttack3 = (GameObject)Instantiate(lightAttack3, transform.position, transform.rotation);
 
@@ -116,7 +133,7 @@ public class AttackManager : MonoBehaviour {
 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton1" && MA1Cooldown == false)
+            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton1" && MA1Cooldown == false && currentplayerMana >= 18)
             {
 
                 MA1Cooldown = true;
@@ -127,6 +144,10 @@ public class AttackManager : MonoBehaviour {
 
                 attackDamage = 15;
 
+                manaAdditive = 22;
+
+                manaCost = 18;
+
                 instantiatedmediumAttack1 = (GameObject)Instantiate(mediumAttack1, transform.position, transform.rotation);
 
 
@@ -136,15 +157,17 @@ public class AttackManager : MonoBehaviour {
 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton2" && MA2Cooldown == false)
+            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton2" && MA2Cooldown == false && currentplayerMana >= 26)
             {
                 MA2Cooldown = true;
 
                 StartCoroutine("Attack");
 
-                //activateAttack = false;
+                attackDamage = 22;
 
-                attackDamage = 15;
+                manaAdditive = 33;
+
+                manaCost = 26;
 
                 instantiatedmediumAttack2 = (GameObject)Instantiate(mediumAttack2, transform.position, transform.rotation);
 
@@ -153,7 +176,7 @@ public class AttackManager : MonoBehaviour {
 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton3" && MA3Cooldown == false)
+            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton3" && MA3Cooldown == false && currentplayerMana >= 39)
             {
                 MA3Cooldown = true;
 
@@ -161,7 +184,11 @@ public class AttackManager : MonoBehaviour {
 
                 //activateAttack = false;
 
-                attackDamage = 15;
+                attackDamage = 30;
+
+                manaAdditive = 45;
+
+                manaCost = 39;
 
                 instantiatedmediumAttack3 = (GameObject)Instantiate(mediumAttack3, transform.position, transform.rotation);
 
@@ -170,7 +197,7 @@ public class AttackManager : MonoBehaviour {
                 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "HeavyAttackButton" && HACooldown == false)
+            if (EventSystem.current.currentSelectedGameObject.name == "HeavyAttackButton" && HACooldown == false && currentplayerMana >= 65)
             {
                 HACooldown = true;
 
@@ -178,7 +205,11 @@ public class AttackManager : MonoBehaviour {
 
                 //activateAttack = false;
 
-                attackDamage = 30;
+                attackDamage = 50;
+
+                manaAdditive = 70;
+
+                manaCost = 65;
 
                 instantiatedheavyAttack = (GameObject)Instantiate(heavyAttack, transform.position, transform.rotation);
 
@@ -191,8 +222,48 @@ public class AttackManager : MonoBehaviour {
 
     void Update()
     {
+        Debug.Log(currentplayerMana);
+        playerHealthText.text = "" + playerHealth.playerCurrentHealth;
+        playerManaText.text = "" + currentplayerMana;
+
+        if(currentplayerMana > 100)
+        {
+            currentplayerMana = 100;
+        }
+
+        if (currentplayerMana < 0)
+        {
+            currentplayerMana = 0;
+        }
         //Debug.Log(mediumAttack1Cooldown);
         //Debug.Log("" + activateAttack);
+    }
+
+    public void AddMana(int amount)
+    {
+        // If the enemy is dead...
+        //if (isDead)
+            // ... no need to take damage so exit the function.
+            //return;
+
+        // Reduce the current health by the amount of damage sustained.
+        currentplayerMana += amount;
+
+        manaSlider.value = currentplayerMana;
+
+    }
+
+    public void ReduceMana(int amount)
+    {
+        // If the enemy is dead...
+        //if (isDead)
+        // ... no need to take damage so exit the function.
+        //return;
+
+        // Reduce the current health by the amount of damage sustained.
+        currentplayerMana -= amount;
+
+        manaSlider.value = currentplayerMana;
     }
 
     void Cooldowns()
@@ -280,6 +351,16 @@ public class AttackManager : MonoBehaviour {
             // ... damage the player.
             enemyHealth.TakeDamage(attackDamage);
             Debug.Log("Enemy Health: " + enemyHealth.enemyCurrentHealth);
+        }
+
+        if(currentplayerMana <= 100)
+        {
+            ReduceMana(manaCost);
+        }
+
+        if(enemyAttackManager.currentEnemyMana <= 100)
+        {
+            enemyAttackManager.AddMana(manaAdditive);
         }
     }
 }

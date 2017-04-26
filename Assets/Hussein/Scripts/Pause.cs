@@ -6,23 +6,22 @@ public class Pause : MonoBehaviour
 {
     public GameObject pauseMenu;
     public GameObject interactionCanvas;
-    public GameObject attackCanvas;
-    public GameObject moveTypeCanvas;
-    public GameObject lightAttackCanvas;
-    public GameObject mediumAttackCanvas;
-    public GameObject heavyAttackCanvas;
+    //public Canvas attackCanvas;
+    private CanvasGroup attackCanvasObjects;
 
     public bool inGame;
 
     void Start()
     {
-
+        //attackCanvas = FindObjectOfType<Canvas>();
         Time.timeScale = 1;
+
+
     }
 
     void Update()
     {
-        attackCanvas = GameObject.FindGameObjectWithTag("AttackCanvas");
+        attackCanvasObjects = FindObjectOfType<CanvasGroup>();
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -33,11 +32,7 @@ public class Pause : MonoBehaviour
 
                 if(inGame)
                 {
-                    attackCanvas.SetActive(false);
-                    moveTypeCanvas.SetActive(false);
-                    lightAttackCanvas.SetActive(false);
-                    mediumAttackCanvas.SetActive(false);
-                    heavyAttackCanvas.SetActive(false);
+                    attackCanvasObjects.interactable = false;
                 }
 
                 Time.timeScale = 0;
@@ -51,11 +46,7 @@ public class Pause : MonoBehaviour
 
                 if (inGame)
                 {
-                    attackCanvas.SetActive(true);
-                    moveTypeCanvas.SetActive(true);
-                    lightAttackCanvas.SetActive(true);
-                    mediumAttackCanvas.SetActive(true);
-                    heavyAttackCanvas.SetActive(true);
+                    attackCanvasObjects.interactable = true;
                 }
 
                 Time.timeScale = 1;

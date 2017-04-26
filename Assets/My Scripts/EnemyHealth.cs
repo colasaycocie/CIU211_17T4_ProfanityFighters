@@ -74,7 +74,8 @@ public class EnemyHealth : MonoBehaviour
         // The enemy is dead.
         StartCoroutine("GoBackToLevelSelectCo");
         isDead = true;
-        enemyAttackManager2.enabled = false;
+        enemyAttackManager2.canAttack = false;
+
         Instantiate(winCanvas);
 
 
@@ -82,7 +83,8 @@ public class EnemyHealth : MonoBehaviour
 
     IEnumerator GoBackToLevelSelectCo()
     {
-
+        yield return new WaitForSeconds(0.001f);
+        enemyAttackManager2.enabled = false;
         yield return new WaitForSeconds(1f);
         enemySprite.SetActive(false);
         yield return new WaitForSeconds(3f);

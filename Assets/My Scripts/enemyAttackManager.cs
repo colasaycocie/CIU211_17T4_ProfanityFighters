@@ -72,6 +72,7 @@ public class enemyAttackManager : MonoBehaviour {
 
     void Start ()
     {
+        canAttack = false;
         playerManaScript = FindObjectOfType<playerMana>();
         enemyModel = GameObject.FindGameObjectWithTag("EnemyModel");
         enemyAnim = enemyModel.GetComponent<Animator>();
@@ -345,8 +346,10 @@ public class enemyAttackManager : MonoBehaviour {
     public IEnumerator ChooseAttackCo()
     {
         yield return new WaitForSeconds(2f);
-        canAttack = true;
-
+        if(enemyHealth.enemyCurrentHealth > 0)
+        {
+            canAttack = true;
+        }
     }
 
     public IEnumerator Attack()

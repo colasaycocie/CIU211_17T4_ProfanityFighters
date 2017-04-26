@@ -16,6 +16,7 @@ public class LevelLoader : MonoBehaviour
     {
         if (gameObject.CompareTag("Play"))
             {
+            Time.timeScale = 1f;
             SceneManager.LoadScene(selectedLevel);
             }
 

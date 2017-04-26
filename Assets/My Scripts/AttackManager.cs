@@ -248,6 +248,14 @@ public class AttackManager : MonoBehaviour {
     {
 
         playerHealthText.text = "" + playerHealth.playerCurrentHealth;
+
+        if (enemyHealth.enemyCurrentHealth <= 0)
+        {
+
+            // ... the enemy is dead.
+            enemyHealth.enemyCurrentHealth = 0;
+            
+        }
         //playerManaText.text = "" + currentplayerMana;
 
         //Debug.Log(mediumAttack1Cooldown);

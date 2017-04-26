@@ -6,15 +6,21 @@ using UnityEngine.UI;
 public class enemyAttackManager : MonoBehaviour {
 
     GameObject player;
+    public GameObject playerModel;
+    GameObject enemyModel;
+    Animator enemyAnim;
+    Animator playerAnim;
     playerHealth playerHealth;                  // Reference to the player's health.
     EnemyHealth enemyHealth;
     public AttackManager attackManager;
+    playerMana playerManaScript;
+    enemyMana enemyManaScript;
 
     private int attackDamage;               // The amount of health taken away per attack.
     private int manaAdditive;
     private int manaCost;
 
-    public int startingEnemyMana = 50;
+    public static int startingEnemyMana = 50;
     public static int currentEnemyMana;
     public Slider manaSlider;
     public Slider playerManaSlider;
@@ -22,10 +28,10 @@ public class enemyAttackManager : MonoBehaviour {
     public Text enemyManaText;
 
     [Header("Cooldowns")]
-    public static int mediumAttack1Cooldown = 3;
-    public static int mediumAttack2Cooldown = 3;
-    public static int mediumAttack3Cooldown = 3;
-    public static int heavyAttackCooldown = 5;
+    public static int mediumAttack1Cooldown = 4;
+    public static int mediumAttack2Cooldown = 4;
+    public static int mediumAttack3Cooldown = 4;
+    public static int heavyAttackCooldown = 6;
     private static bool MA1Cooldown;
     private static bool MA2Cooldown;
     private static bool MA3Cooldown;
@@ -61,17 +67,19 @@ public class enemyAttackManager : MonoBehaviour {
     // Use this for initialization
     void Awake()
     {
-        currentEnemyMana = startingEnemyMana;
 
     }
 
     void Start ()
     {
+        playerManaScript = FindObjectOfType<playerMana>();
+        enemyModel = GameObject.FindGameObjectWithTag("EnemyModel");
+        enemyAnim = enemyModel.GetComponent<Animator>();
+        playerAnim = playerModel.GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player");
         playerHealth = player.GetComponent<playerHealth>();
         enemyHealth = FindObjectOfType<EnemyHealth>();
-
-
+        enemyManaScript = FindObjectOfType<enemyMana>();
         //AttackManager = FindObjectOfType<AttackManager>();
     }
 
@@ -79,57 +87,49 @@ public class enemyAttackManager : MonoBehaviour {
 	void Update ()
     {
         enemyHealthText.text = "" + enemyHealth.enemyCurrentHealth;
-        enemyManaText.text = "" + currentEnemyMana;
 
-        if (currentEnemyMana > 100)
-        {
-            currentEnemyMana = 100;
-        }
-
-        if (currentEnemyMana < 0)
-        {
-            currentEnemyMana = 0;
-        }
-
-        //Debug.Log(randomNum);
+        //Debug.Log("RNG: " + randomNum);
 
         if (AttackManager.activateAttack == false)
         {
             //Debug.Log(AttackManager.activateAttack);
 
-
             StartCoroutine("ChooseAttackCo");
 
             if(canAttack == true)
             {
+
                 RNG();
 
                 if (randomNum == 1)
                 {
+                    AttackAnimation();
 
                     instantiatedlightAttack1 = (GameObject)Instantiate(lightAttack1, transform.position, transform.rotation);
 
                     StartCoroutine("Attack");
 
+                    StartCoroutine("InjureCo");
+
                     attackDamage = 5;
 
-                    manaAdditive = 10;
+                    manaAdditive = 7;
 
                     // After 2 seconds the text is destroyed.
                     Destroy(instantiatedlightAttack1.gameObject, 2f);
                 }
-                else
-                {
-
-                }
 
                 if (randomNum == 2)
                 {
+                    AttackAnimation();
+
                     StartCoroutine("Attack");
+
+                    StartCoroutine("InjureCo");
 
                     attackDamage = 7;
 
-                    manaAdditive = 14;
+                    manaAdditive = 10;
 
                     instantiatedlightAttack2 = (GameObject)Instantiate(lightAttack2, transform.position, transform.rotation);
 
@@ -137,34 +137,34 @@ public class enemyAttackManager : MonoBehaviour {
                     // After 2 seconds the text is destroyed.
                     Destroy(instantiatedlightAttack2.gameObject, 2f);
                 }
-                else
-                {
-
-                }
 
                 if (randomNum == 3)
                 {
+                    AttackAnimation();
+
                     StartCoroutine("Attack");
+
+                    StartCoroutine("InjureCo");
 
                     attackDamage = 10;
 
-                    manaAdditive = 20;
+                    manaAdditive = 15;
 
                     instantiatedlightAttack3 = (GameObject)Instantiate(lightAttack3, transform.position, transform.rotation);
 
                     // After 2 seconds the text is destroyed.
                     Destroy(instantiatedlightAttack3.gameObject, 2f);
                 }
-                else
-                {
 
-                }
-
-                if (randomNum == 4 && MA1Cooldown == false && currentEnemyMana >= 18)
+                if (randomNum == 4 && MA1Cooldown == false && enemyManaScript.currentEnemyMana >= 18)
                 {
                     MA1Cooldown = true;
 
+                    AttackAnimation();
+
                     StartCoroutine("Attack");
+
+                    StartCoroutine("InjureCo");
 
                     attackDamage = 15;
 
@@ -177,16 +177,20 @@ public class enemyAttackManager : MonoBehaviour {
                     // After 2 seconds the text is destroyed.
                     Destroy(instantiatedmediumAttack1.gameObject, 2f);
                 }
-                else
+                else if(AttackManager.activateAttack == false)
                 {
                     RNG();
                 }
 
-                if (randomNum == 5 && MA2Cooldown == false && currentEnemyMana >= 26)
+                if (randomNum == 5 && MA2Cooldown == false && enemyManaScript.currentEnemyMana >= 26)
                 {
                     MA2Cooldown = true;
 
+                    AttackAnimation();
+
                     StartCoroutine("Attack");
+
+                    StartCoroutine("InjureCo");
 
                     attackDamage = 22;
 
@@ -199,16 +203,20 @@ public class enemyAttackManager : MonoBehaviour {
                     // After 2 seconds the text is destroyed.
                     Destroy(instantiatedmediumAttack2.gameObject, 2f);
                 }
-                else
+                else if (AttackManager.activateAttack == false)
                 {
                     RNG();
                 }
 
-                if (randomNum == 6 && MA3Cooldown == false && currentEnemyMana >= 39)
+                if (randomNum == 6 && MA3Cooldown == false && enemyManaScript.currentEnemyMana >= 39)
                 {
                     MA3Cooldown = true;
 
+                    AttackAnimation();
+
                     StartCoroutine("Attack");
+
+                    StartCoroutine("InjureCo");
 
                     attackDamage = 30;
 
@@ -218,19 +226,25 @@ public class enemyAttackManager : MonoBehaviour {
 
                     instantiatedmediumAttack3 = (GameObject)Instantiate(mediumAttack3, transform.position, transform.rotation);
 
+                    playerAnim.SetBool("IsGettingAttacked", true);
+
                     // After 2 seconds the text is destroyed.
                     Destroy(instantiatedmediumAttack3.gameObject, 2f);
                 }
-                else
+                else if (AttackManager.activateAttack == false)
                 {
                     RNG();
                 }
 
-                if (randomNum == 7 && HACooldown == false && currentEnemyMana >= 65)
+                if (randomNum == 7 && HACooldown == false && enemyManaScript.currentEnemyMana >= 65)
                 {
                     HACooldown = true;
 
+                    AttackAnimation();
+
                     StartCoroutine("Attack");
+
+                    StartCoroutine("InjureCo");
 
                     attackDamage = 50;
 
@@ -243,40 +257,13 @@ public class enemyAttackManager : MonoBehaviour {
                     // After 2 seconds the text is destroyed.
                     Destroy(instantiatedheavyAttack.gameObject, 2f);
                 }
-                else
+                else if (AttackManager.activateAttack == false)
                 {
                     RNG();
                 }
             }
         }
 	}
-
-    public void AddMana(int amount)
-    {
-        // If the enemy is dead...
-        //if (isDead)
-        // ... no need to take damage so exit the function.
-        //return;
-
-        // Reduce the current health by the amount of damage sustained.
-        currentEnemyMana += amount;
-
-        manaSlider.value = currentEnemyMana;
-
-    }
-
-    public void ReduceMana(int amount)
-    {
-        // If the enemy is dead...
-        //if (isDead)
-        // ... no need to take damage so exit the function.
-        //return;
-
-        // Reduce the current health by the amount of damage sustained.
-        currentEnemyMana -= amount;
-
-        manaSlider.value = currentEnemyMana;
-    }
 
     void RNG()
     {
@@ -342,6 +329,19 @@ public class enemyAttackManager : MonoBehaviour {
         }
     }
 
+    void AttackAnimation()
+    {
+        enemyAnim.SetBool("IsAttacking", true);
+    }
+
+    IEnumerator InjureCo()
+    {
+        yield return new WaitForSeconds(1.3f);
+        playerAnim.SetBool("IsGettingAttacked", true);
+        yield return new WaitForSeconds(0.5f);
+        playerAnim.SetBool("IsGettingAttacked", false);
+    }
+
     public IEnumerator ChooseAttackCo()
     {
         yield return new WaitForSeconds(2f);
@@ -354,26 +354,29 @@ public class enemyAttackManager : MonoBehaviour {
         Cooldowns();
 
         AttackManager.activateAttack = true;
+
         yield return new WaitForSeconds(2f);
+
+        enemyAnim.SetBool("IsAttacking", false);
+
         canAttack = false;
 
         if (playerHealth.playerCurrentHealth > 0)
         {
             // ... damage the player.
             playerHealth.TakeDamage(attackDamage);
-            Debug.Log("Player Health: " + playerHealth.playerCurrentHealth);
             //StopCoroutine("Attack");
 
         }
 
         if (currentEnemyMana <= 100)
         {
-            ReduceMana(manaCost);
+            enemyManaScript.ReduceMana(manaCost);
         }
 
-        if (AttackManager.currentplayerMana <= 100)
+        if (playerManaScript.currentplayerMana <= 100)
         {
-            attackManager.AddMana(manaAdditive);
+            playerManaScript.AddMana(manaAdditive);
         }
     }
 

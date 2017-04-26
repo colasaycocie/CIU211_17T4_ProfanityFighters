@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class playerHealth : MonoBehaviour {
@@ -9,9 +10,15 @@ public class playerHealth : MonoBehaviour {
     public int startingHealth = 100;            // The amount of health the enemy starts the game with.
     public int playerCurrentHealth;                   // The current health the enemy has.
 
+    public GameObject loseCanvas;
+    public Object sceneToLoad;
+    public GameObject playerSprite;
+
+    public string levelName;
+
     public Slider healthSlider;                                 // Reference to the UI's health bar.
 
-    //Animator anim;                              // Reference to the animator.
+    Animator anim;                              // Reference to the animator.
     //AudioSource enemyAudio;                     // Reference to the audio source.
 
     bool isDead;                                // Whether the enemy is dead.
@@ -19,7 +26,7 @@ public class playerHealth : MonoBehaviour {
     void Awake()
     {
         // Setting up the references.
-        //anim = GetComponent<Animator>();
+        anim = GetComponentInChildren<Animator>();
         //enemyAudio = GetComponent<AudioSource>();
         GameObject.Find("BloodParticle");
 
@@ -39,8 +46,9 @@ public class playerHealth : MonoBehaviour {
             // ... no need to take damage so exit the function.
             return;
 
-        // Play the hurt sound effect.
-        //enemyAudio.Play();
+        //anim.SetBool("IsGettingAttacked", true);
+
+        StartCoroutine("IdleCo");
 
         // Reduce the current health by the amount of damage sustained.
         playerCurrentHealth -= amount;
@@ -51,16 +59,33 @@ public class playerHealth : MonoBehaviour {
         if (playerCurrentHealth <= 0)
         {
             // ... the enemy is dead.
-            playerCurrentHealth = 0;
             Death();
         }
     }
 
     void Death()
     {
+        StartCoroutine("GoBackToLevelSelectCo");
         // The enemy is dead.
         isDead = true;
+        Instantiate(loseCanvas);
+        playerCurrentHealth = 0;
 
-        Destroy(gameObject, 1.5f);
+
+    }
+
+    IEnumerator IdleCo()
+    {
+        yield return new WaitForSeconds(1f);
+        //anim.SetBool("IsGettingAttacked", false);
+    }
+
+    IEnumerator GoBackToLevelSelectCo()
+    { 
+
+        yield return new WaitForSeconds(1f);
+        playerSprite.SetActive(false);
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene("Level Select");
     }
 }

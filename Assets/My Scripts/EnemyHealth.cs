@@ -2,13 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class EnemyHealth : MonoBehaviour
 {
+    enemyAttackManager enemyAttackManager2;
 
     public int startingHealth = 100;            // The amount of health the enemy starts the game with.
     public int enemyCurrentHealth;                   // The current health the enemy has.
+
+    public GameObject winCanvas;
+    public Object sceneToLoad;
+    public GameObject enemySprite;
+
+    public string levelName;
 
     public Slider healthSlider;                                 // Reference to the UI's health bar.
 
@@ -19,6 +27,8 @@ public class EnemyHealth : MonoBehaviour
 
     void Awake()
     {
+        enemyAttackManager2 = FindObjectOfType<enemyAttackManager>();
+
         // Setting up the references.
         //anim = GetComponent<Animator>();
         //enemyAudio = GetComponent<AudioSource>();
@@ -62,8 +72,20 @@ public class EnemyHealth : MonoBehaviour
     void Death()
     {
         // The enemy is dead.
+        StartCoroutine("GoBackToLevelSelectCo");
         isDead = true;
+        enemyAttackManager2.enabled = false;
+        Instantiate(winCanvas);
 
-        Destroy(gameObject, 1.5f);
+
+    }
+
+    IEnumerator GoBackToLevelSelectCo()
+    {
+
+        yield return new WaitForSeconds(1f);
+        enemySprite.SetActive(false);
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene("Level Select");
     }
 }

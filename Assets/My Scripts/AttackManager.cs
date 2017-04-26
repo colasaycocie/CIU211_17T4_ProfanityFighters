@@ -10,18 +10,16 @@ public class AttackManager : MonoBehaviour {
     private int manaAdditive;
     private int manaCost;
 
-    public static int startingPlayerMana = 50;
-    public static int currentplayerMana;
     public Slider manaSlider;
     public Slider enemyManaSlider;
     public Text playerHealthText;
     public Text playerManaText;
 
     [Header("Cooldowns")]
-    public static int mediumAttack1Cooldown = 3;
-    public static int mediumAttack2Cooldown = 3;
-    public static int mediumAttack3Cooldown = 3;
-    public static int heavyAttackCooldown = 5;
+    public static int mediumAttack1Cooldown = 4;
+    public static int mediumAttack2Cooldown = 4;
+    public static int mediumAttack3Cooldown = 4;
+    public static int heavyAttackCooldown = 6;
     private static bool MA1Cooldown;
     private static bool MA2Cooldown;
     private static bool MA3Cooldown;
@@ -35,10 +33,15 @@ public class AttackManager : MonoBehaviour {
     public Text HACooldownText;
     public GameObject HACooldownButton;
 
-    Animator anim;                              // Reference to the animator component.
+    Animator playerAnim;                              // Reference to the animator component.
+    Animator enemyAnim;
+    GameObject enemyModel;
+    public GameObject playerModel;
     GameObject enemy;
     EnemyHealth enemyHealth;                    // Reference to this enemy's health.
     playerHealth playerHealth;
+    playerMana playerManaScript;
+    enemyMana enemyManaScript;
 
     public enemyAttackManager enemyAttackManager;
 
@@ -63,12 +66,16 @@ public class AttackManager : MonoBehaviour {
 
     void Start()
     {
+        enemyManaScript = FindObjectOfType<enemyMana>();
+        playerManaScript = FindObjectOfType<playerMana>();
         // Setting up the references.
         enemyAttackManager = FindObjectOfType<enemyAttackManager>();
         enemy = GameObject.FindGameObjectWithTag("Enemy");
         playerHealth = FindObjectOfType<playerHealth>();
         enemyHealth = enemy.GetComponent<EnemyHealth>();
-        currentplayerMana = startingPlayerMana;
+        playerAnim = playerModel.GetComponent<Animator>();
+        enemyModel = GameObject.FindGameObjectWithTag("EnemyModel");
+        enemyAnim = enemyModel.GetComponent<Animator>();
     }
 
     public void OnClick()
@@ -77,16 +84,20 @@ public class AttackManager : MonoBehaviour {
 
         if(activateAttack == true && enemyAttackManager.canAttack == false)
         {
+
             //Debug.Log("" + activateAttack);
 
             if (EventSystem.current.currentSelectedGameObject.name == "LightAttackButton1")
             {
+                AttackAnimation();
 
                 StartCoroutine("Attack");
 
+                StartCoroutine("InjureCo");
+
                 attackDamage = 5;
 
-                manaAdditive = 10;
+                manaAdditive = 7;
 
                 //activateAttack = false;
 
@@ -99,12 +110,15 @@ public class AttackManager : MonoBehaviour {
 
             if (EventSystem.current.currentSelectedGameObject.name == "LightAttackButton2")
             {
+                AttackAnimation();
 
                 StartCoroutine("Attack");
 
+                StartCoroutine("InjureCo");
+
                 attackDamage = 7;
 
-                manaAdditive = 14;
+                manaAdditive = 10;
 
                 //activateAttack = false;
 
@@ -117,14 +131,15 @@ public class AttackManager : MonoBehaviour {
 
             if (EventSystem.current.currentSelectedGameObject.name == "LightAttackButton3")
             {
+                AttackAnimation();
 
                 StartCoroutine("Attack");
 
-                //activateAttack = false;
+                StartCoroutine("InjureCo");
 
                 attackDamage = 10;
 
-                manaAdditive = 20;
+                manaAdditive = 15;
 
                 instantiatedlightAttack3 = (GameObject)Instantiate(lightAttack3, transform.position, transform.rotation);
 
@@ -133,14 +148,15 @@ public class AttackManager : MonoBehaviour {
 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton1" && MA1Cooldown == false && currentplayerMana >= 18)
+            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton1" && MA1Cooldown == false && playerManaScript.currentplayerMana >= 18)
             {
+                AttackAnimation();
 
                 MA1Cooldown = true;
 
                 StartCoroutine("Attack");
 
-                //activateAttack = false;
+                StartCoroutine("InjureCo");
 
                 attackDamage = 15;
 
@@ -157,11 +173,15 @@ public class AttackManager : MonoBehaviour {
 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton2" && MA2Cooldown == false && currentplayerMana >= 26)
+            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton2" && MA2Cooldown == false && playerManaScript.currentplayerMana >= 26)
             {
+                AttackAnimation();
+
                 MA2Cooldown = true;
 
                 StartCoroutine("Attack");
+
+                StartCoroutine("InjureCo");
 
                 attackDamage = 22;
 
@@ -176,13 +196,15 @@ public class AttackManager : MonoBehaviour {
 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton3" && MA3Cooldown == false && currentplayerMana >= 39)
+            if (EventSystem.current.currentSelectedGameObject.name == "MediumAttackButton3" && MA3Cooldown == false && playerManaScript.currentplayerMana >= 39)
             {
+                AttackAnimation();
+
                 MA3Cooldown = true;
 
                 StartCoroutine("Attack");
 
-                //activateAttack = false;
+                StartCoroutine("InjureCo");
 
                 attackDamage = 30;
 
@@ -197,13 +219,15 @@ public class AttackManager : MonoBehaviour {
                 
             }
 
-            if (EventSystem.current.currentSelectedGameObject.name == "HeavyAttackButton" && HACooldown == false && currentplayerMana >= 65)
+            if (EventSystem.current.currentSelectedGameObject.name == "HeavyAttackButton" && HACooldown == false && playerManaScript.currentplayerMana >= 65)
             {
+                AttackAnimation();
+
                 HACooldown = true;
 
                 StartCoroutine("Attack");
 
-                //activateAttack = false;
+                StartCoroutine("InjureCo");
 
                 attackDamage = 50;
 
@@ -222,48 +246,17 @@ public class AttackManager : MonoBehaviour {
 
     void Update()
     {
-        Debug.Log(currentplayerMana);
+
         playerHealthText.text = "" + playerHealth.playerCurrentHealth;
-        playerManaText.text = "" + currentplayerMana;
+        //playerManaText.text = "" + currentplayerMana;
 
-        if(currentplayerMana > 100)
-        {
-            currentplayerMana = 100;
-        }
-
-        if (currentplayerMana < 0)
-        {
-            currentplayerMana = 0;
-        }
         //Debug.Log(mediumAttack1Cooldown);
         //Debug.Log("" + activateAttack);
     }
 
-    public void AddMana(int amount)
+    void AttackAnimation()
     {
-        // If the enemy is dead...
-        //if (isDead)
-            // ... no need to take damage so exit the function.
-            //return;
-
-        // Reduce the current health by the amount of damage sustained.
-        currentplayerMana += amount;
-
-        manaSlider.value = currentplayerMana;
-
-    }
-
-    public void ReduceMana(int amount)
-    {
-        // If the enemy is dead...
-        //if (isDead)
-        // ... no need to take damage so exit the function.
-        //return;
-
-        // Reduce the current health by the amount of damage sustained.
-        currentplayerMana -= amount;
-
-        manaSlider.value = currentplayerMana;
+        playerAnim.SetBool("IsAttacking", true);
     }
 
     void Cooldowns()
@@ -279,7 +272,7 @@ public class AttackManager : MonoBehaviour {
             {
 
                 MA1Cooldown = false;
-                mediumAttack1Cooldown = 3;
+                mediumAttack1Cooldown = 4;
                 MA1CooldownText.text = "" + mediumAttack1Cooldown;
                 MA1CooldownButton.SetActive(false);
             }
@@ -296,7 +289,7 @@ public class AttackManager : MonoBehaviour {
             {
 
                 MA2Cooldown = false;
-                mediumAttack2Cooldown = 2;
+                mediumAttack2Cooldown = 4;
                 MA2CooldownText.text = "" + mediumAttack2Cooldown;
                 MA2CooldownButton.SetActive(false);
             }
@@ -313,7 +306,7 @@ public class AttackManager : MonoBehaviour {
             {
 
                 MA3Cooldown = false;
-                mediumAttack3Cooldown = 2;
+                mediumAttack3Cooldown = 4;
                 MA3CooldownText.text = "" + mediumAttack3Cooldown;
                 MA3CooldownButton.SetActive(false);
             }
@@ -331,11 +324,20 @@ public class AttackManager : MonoBehaviour {
             {
 
                 HACooldown = false;
-                heavyAttackCooldown = 5;
+                heavyAttackCooldown = 6;
                 HACooldownText.text = "" + heavyAttackCooldown;
                 HACooldownButton.SetActive(true);
             }
         }
+    }
+
+
+    IEnumerator InjureCo()
+    {
+        yield return new WaitForSeconds(1.3f);
+        enemyAnim.SetBool("IsGettingAttacked", true);
+        yield return new WaitForSeconds(0.5f);
+        enemyAnim.SetBool("IsGettingAttacked", false);
     }
 
     public IEnumerator Attack()
@@ -344,23 +346,23 @@ public class AttackManager : MonoBehaviour {
         activateAttack = false;
         yield return new WaitForSeconds(2f);
 
-        //activateAttack = true;
+        playerAnim.SetBool("IsAttacking", false);
 
         if (enemyHealth.enemyCurrentHealth > 0)
         {
             // ... damage the player.
             enemyHealth.TakeDamage(attackDamage);
-            Debug.Log("Enemy Health: " + enemyHealth.enemyCurrentHealth);
+            //Debug.Log("Enemy Health: " + enemyHealth.enemyCurrentHealth);
         }
 
-        if(currentplayerMana <= 100)
+        if(playerManaScript.currentplayerMana <= 100)
         {
-            ReduceMana(manaCost);
+            playerManaScript.ReduceMana(manaCost);
         }
 
         if(enemyAttackManager.currentEnemyMana <= 100)
         {
-            enemyAttackManager.AddMana(manaAdditive);
+            enemyManaScript.AddMana(manaAdditive);
         }
     }
 }

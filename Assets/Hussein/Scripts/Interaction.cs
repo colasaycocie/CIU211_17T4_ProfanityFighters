@@ -8,13 +8,14 @@ public class Interaction : MonoBehaviour
 {
     public GameObject interactionText;
     public Object sceneToLoad;
+    public string levelName;
 
 	void OnTriggerStay ()
     {
         if (Input.GetButtonDown("Interact"))
         { 
                 interactionText.SetActive(false);
-                SceneManager.LoadScene(sceneToLoad.name);
+                SceneManager.LoadScene(levelName);
 
         }
     }
